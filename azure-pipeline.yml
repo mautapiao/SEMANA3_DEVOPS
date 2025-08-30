@@ -83,9 +83,10 @@ steps:
       --resource-group $(resourceGroupName) \
       --name $(vmName) \
       --command-id RunShellScript \
-      --scripts "sudo rm -rf /var/www/html/* && sudo cp -r /tmp/app/* /var/www/html/"
-     displayName: "Copiar archivos a VM"
+      --scripts "sudo cp -r $(System.DefaultWorkingDirectory)/* /var/www/html/"
+     echo "Copiar archivos a VM"
 
   
+
 
 
