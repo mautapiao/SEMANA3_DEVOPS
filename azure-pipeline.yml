@@ -77,3 +77,6 @@ steps:
       az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "echo 'hola curso devops hemos automatizado el despliegue de maquina virtual desde azure devops' | sudo tee /var/www/html/index.html"
       echo "Apache instalado y página de bienvenida configurada."
 
+              echo "Copiando archivos del repo a /var/www/html"
+              sudo rm -rf /var/www/html/*
+              sudo cp -r $(System.DefaultWorkingDirectory)/* /var/www/html/
