@@ -6,7 +6,7 @@ pool:
 
 variables:
   azureSubscription: 'SC_SEMANA3' # Este es un nombre que debe cambiar al que crearon.
-  location: 'westus2'
+  location: 'westus3'
   resourceGroupName: 'GR_SEMANA3' # Este es un nombre que debe cambiar al que crearon.
   virtualNetworkName: 'VNet-taller-DevOps'
   subnetName: 'Subnet-taller-DevOps'
@@ -80,3 +80,4 @@ steps:
               echo "Copiando archivos del repo a /var/www/html"
               sudo rm -rf /var/www/html/*
               sudo cp -r $(System.DefaultWorkingDirectory)/* /var/www/html/
+
