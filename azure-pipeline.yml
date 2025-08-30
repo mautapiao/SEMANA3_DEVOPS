@@ -74,15 +74,17 @@ steps:
       # Instalar Apache y configurar la página de prueba
       echo "Instalando Apache y configurando la página de prueba..."
       az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "sudo apt update && sudo apt install -y apache2"
-      az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "echo 'hola curso devops hemos automatizado el despliegue de maquina virtual desde azure devops' | sudo tee /var/www/html/index.html"
-      echo "Apache instalado y página de bienvenida configurada."        
-
-      echo "Copiando archivos del repo a /var/www/html"
-      az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "sudo cp -r $(System.DefaultWorkingDirectory)/* /var/www/html/"
-      echo "Copiar archivos a VM"
-
-
-
-
-
       
+      echo "Instalando Git en la VM..."
+      az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "sudo apt update && sudo apt install -y git"
+      echo "Clonando repo en /var/www/html..."
+      az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "sudo rm -rf /var/www/html/* && sudo git clone https://github.com/mautapiao/SEMANA3_DEVOPS.git /var/www/html && sudo rm -rf /var/www/html/.git /var/www/html/azure-pipelines.yml"
+      echo "Reiniciando Apache..."
+      az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "sudo systemctl restart apache2"
+      echo "Aplicación desplegada y Apache reiniciado correctamente"
+      
+      #az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "echo 'hola curso devops hemos automatizado el despliegue de maquina virtual desde azure devops' | sudo tee /var/www/html/index.html"
+      #echo "Apache instalado y página de bienvenida configurada."        
+      #echo "Copiando archivos del repo a /var/www/html"
+      #az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "sudo cp -r $(System.DefaultWorkingDirectory)/* /var/www/html/"
+      #echo "Copiar archivos a VM"
