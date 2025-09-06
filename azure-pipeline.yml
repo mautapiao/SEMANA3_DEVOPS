@@ -51,11 +51,15 @@ steps:
       echo "Grupo de seguridad de red creado."
       az network nsg wait --resource-group $(resourceGroupName) --name $(securityGroupName) --created
 
-      # Permitir acceso a los puertos 22 y 80
+      # Permitir acceso a los puertos 22, 80 y 8080
       echo "Configurando reglas de NSG..."
       az network nsg rule create --resource-group $(resourceGroupName) --nsg-name $(securityGroupName) --name AllowSSH --protocol tcp --direction inbound --priority 1000 --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range 22 --access allow
       az network nsg rule create --resource-group $(resourceGroupName) --nsg-name $(securityGroupName) --name AllowHTTP --protocol tcp --direction inbound --priority 1001 --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range 80 --access allow
       az network nsg rule create --resource-group $(resourceGroupName) --nsg-name $(securityGroupName) --name AllowICMP --protocol icmp --direction inbound --priority 1002 --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range '*' --access allow
+
+      echo "Abriendo puerto 8080 en el NSG...6-9"
+      az network nsg rule create --resource-group $(resourceGroupName) --nsg-name $(securityGroupName) --name AllowHTTP8080 --protocol tcp --direction inbound --priority 1003 --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range 8080 --access allow
+      echo "Abrir puerto 8080 en NSG"
 
       echo "Reglas de NSG configuradas."
 
@@ -87,4 +91,7 @@ steps:
       az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "sudo systemctl restart apache2"
       echo "Aplicación desplegada y Apache reiniciado correctamente"
     
+      echo "Cambiando Apache al puerto 8080...6-9"
+      az vm run-command invoke --resource-group $(resourceGroupName) --name $(vmName) --command-id RunShellScript --scripts "sudo sed -i 's/80/8080/g' /etc/apache2/ports.conf && sudo sed -i 's/*:80/*:8080/g' /etc/apache2/sites-enabled/000-default.conf && sudo systemctl restart apache2"
+      echo "Configurar Apache en puerto 8080"
 
